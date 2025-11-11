@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>길동이의 취업 준비 플랫폼</title>
+    <!-- Google Fonts - Noto Sans KR (한글 폰트) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- jsPDF 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas (한글 렌더링을 위해 사용) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-menu li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Section Styling */
+        section {
+            background: white;
+            margin: 2rem 0;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            scroll-margin-top: 80px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        section h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        section p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Form Styling */
+        .resume-form {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Noto Sans KR', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Timeline Styling */
+        .timeline-container {
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 70px;
+            animation: slideInRight 0.5s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 20px;
+            top: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            z-index: 2;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .timeline-dot:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline-content:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-company {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-submitted {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-interview {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-result {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: #5568d3;
+        }
+
+        .btn-small.delete {
+            background: #f5576c;
+        }
+
+        .btn-small.delete:hover {
+            background: #e0455a;
+        }
+
+        .add-company-form {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 2px dashed #ddd;
+            transition: border-color 0.3s ease;
+        }
+
+        .add-company-form:hover {
+            border-color: #667eea;
+        }
+
+        .add-company-form h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .empty-timeline {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-timeline-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Interview Timer Styling */
+        .timer-container {
+            margin-top: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .timer-question-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .timer-question-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .timer-question-section textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+
+        .timer-question-section textarea:focus {
+            outline: none;
+            border-color: white;
+            background: white;
+        }
+
+        .timer-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .timer-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .timer-option {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .timer-option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .timer-option.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-display.warning {
+            color: #ffeb3b;
+            animation: pulse 1s infinite;
+        }
+
+        .timer-display.danger {
+            color: #f44336;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .timer-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+            min-width: 120px;
+        }
+
+        .timer-btn.start {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        .timer-btn.start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.4);
+        }
+
+        .timer-btn.pause {
+            background: #ff9800;
+            color: white;
+        }
+
+        .timer-btn.pause:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .timer-btn.reset {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .timer-btn.reset:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .timer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .timer-status {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            min-height: 30px;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .timer-progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Chatbot Styling */
+        .chatbot-container {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chatbot-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .chatbot-header-info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .chatbot-header-info p {
+            margin: 0.25rem 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+            max-width: 80%;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .message-content {
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+
+        .message.user .message-time {
+            text-align: left;
+        }
+
+        .chatbot-input-area {
+            padding: 1.5rem;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .chatbot-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .chatbot-send-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .chatbot-send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .chatbot-send-btn:active {
+            transform: translateY(0);
+        }
+
+        .chatbot-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.25rem;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: 80px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 2rem 1.5rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                padding-left: 60px;
+            }
+
+            .timeline::before {
+                left: 25px;
+            }
+
+            .timeline-dot {
+                left: 15px;
+            }
+
+            .timer-container {
+                padding: 1.5rem;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .timer-options {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .timer-option {
+                width: 100%;
+            }
+
+            .timer-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .timer-btn {
+                width: 100%;
+            }
+
+            .chatbot-container {
+                height: 500px;
+            }
+
+            .chatbot-header {
+                padding: 1rem;
+            }
+
+            .chatbot-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .chatbot-messages {
+                padding: 1rem;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .chatbot-input-area {
+                padding: 1rem;
+                flex-direction: column;
+            }
+
+            .chatbot-input {
+                width: 100%;
+            }
+
+            .chatbot-send-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">길동이의 취업 준비 플랫폼</div>
+            <ul class="nav-menu">
+                <li><a href="#resume">자기소개서 작성</a></li>
+                <li><a href="#interview">면접 연습</a></li>
+                <li><a href="#application">회사 지원 관리</a></li>
+                <li><a href="#chatbot">취업 상담 챗봇</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>길동이의 취업 준비 플랫폼</h1>
+            <p>성공적인 취업을 위한 모든 것을 한 곳에서</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- 자기소개서 작성 섹션 -->
+        <section id="resume">
+            <div class="section-icon">📝</div>
+            <h2>자기소개서 작성</h2>
+            <p>
+                체계적인 자기소개서 작성 도구를 통해 나만의 스토리를 완성하세요.
+                다양한 템플릿과 작성 가이드를 제공하여 효과적인 자기소개서를 작성할 수 있습니다.
+            </p>
+            
+            <div class="resume-form">
+                <form id="resumeForm">
+                    <div class="form-group">
+                        <label for="name">이름 *</label>
+                        <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="position">지원 직무 *</label>
+                        <input type="text" id="position" name="position" placeholder="예: 프론트엔드 개발자, 마케팅 전문가 등" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">자기소개 내용 *</label>
+                        <textarea id="content" name="content" placeholder="자기소개서 내용을 작성해주세요.&#10;&#10;예:&#10;안녕하세요. 저는...&#10;&#10;1. 지원 동기&#10;2. 경력 및 경험&#10;3. 입사 후 포부" required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-download" id="downloadBtn">PDF로 저장하기</button>
+                        <button type="reset" class="btn">초기화</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 면접 연습 섹션 -->
+        <section id="interview">
+            <div class="section-icon">🎤</div>
+            <h2>면접 연습</h2>
+            <p>
+                실제 면접 환경을 시뮬레이션하여 면접 실전 감각을 기를 수 있습니다.
+                다양한 산업 분야의 면접 질문과 모범 답변을 제공합니다.
+            </p>
+            
+            <div class="timer-container">
+                <div class="timer-question-section">
+                    <label for="interviewQuestion">면접 질문 입력</label>
+                    <textarea 
+                        id="interviewQuestion" 
+                        placeholder="연습할 면접 질문을 입력하세요.&#10;예: 자기소개를 해주세요.&#10;예: 지원 동기를 말씀해주세요."
+                    ></textarea>
+                </div>
+
+                <div class="timer-controls">
+                    <div class="timer-options">
+                        <button class="timer-option" data-time="60">1분</button>
+                        <button class="timer-option active" data-time="180">3분</button>
+                        <button class="timer-option" data-time="300">5분</button>
+                    </div>
+
+                    <div class="timer-display" id="timerDisplay">03:00</div>
+
+                    <div class="timer-progress">
+                        <div class="timer-progress-bar" id="timerProgress"></div>
+                    </div>
+
+                    <div class="timer-buttons">
+                        <button class="timer-btn start" id="startBtn">시작</button>
+                        <button class="timer-btn pause" id="pauseBtn" disabled>일시정지</button>
+                        <button class="timer-btn reset" id="resetBtn">리셋</button>
+                    </div>
+
+                    <div class="timer-status" id="timerStatus">준비 완료</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 회사 지원 관리 섹션 -->
+        <section id="application">
+            <div class="section-icon">💼</div>
+            <h2>회사 지원 관리</h2>
+            <p>
+                지원한 회사들의 정보를 체계적으로 관리하고 추적하세요.
+                지원 일정, 결과, 면접 일정 등을 한눈에 확인할 수 있습니다.
+            </p>
+            
+            <div class="timeline-container">
+                <!-- 회사 추가 폼 -->
+                <div class="add-company-form">
+                    <h3>➕ 새 회사 추가</h3>
+                    <form id="addCompanyForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="companyName">회사 이름 *</label>
+                                <input type="text" id="companyName" name="companyName" placeholder="예: 네이버, 카카오 등" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="companyStatus">지원 단계 *</label>
+                                <select id="companyStatus" name="companyStatus" required>
+                                    <option value="submitted">서류 제출</option>
+                                    <option value="interview">면접 진행 중</option>
+                                    <option value="result">최종 결과</option>
+                                    <option value="rejected">불합격</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label for="companyDate">지원 날짜</label>
+                                <input type="date" id="companyDate" name="companyDate">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn">추가하기</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 타임라인 -->
+                <div class="timeline" id="timeline">
+                    <!-- 타임라인 아이템들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 취업 상담 챗봇 섹션 -->
+        <section id="chatbot">
+            <div class="section-icon">💬</div>
+            <h2>취업 상담 챗봇</h2>
+            <p>
+                취업 준비에 대한 궁금한 점을 물어보세요. 길동이 취업 코치가 도와드립니다.
+                자기소개서 작성, 면접 준비, 취업 전략 등 다양한 질문에 답변해드립니다.
+            </p>
+            
+            <div class="chatbot-container">
+                <div class="chatbot-header">
+                    <div class="chatbot-avatar">🤖</div>
+                    <div class="chatbot-header-info">
+                        <h3>길동이 취업 코치</h3>
+                        <p>온라인 · 도움을 드리겠습니다</p>
+                    </div>
+                </div>
+                
+                <div class="chatbot-messages" id="chatbotMessages">
+                    <div class="welcome-message">
+                        안녕하세요! 저는 길동이 취업 코치입니다. 😊<br>
+                        취업 준비에 대해 궁금한 점을 물어보세요!
+                    </div>
+                </div>
+                
+                <div class="chatbot-input-area">
+                    <input 
+                        type="text" 
+                        class="chatbot-input" 
+                        id="chatbotInput" 
+                        placeholder="질문을 입력하세요..."
+                        autocomplete="off"
+                    >
+                    <button class="chatbot-send-btn" id="chatbotSendBtn">전송</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 길동이의 취업 준비 플랫폼. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Smooth scroll navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation highlight
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-menu a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.backgroundColor = '';
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                }
+            });
+        });
+
+        // HTML 이스케이프 함수 (XSS 방지)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // PDF 다운로드 기능 (한글 폰트 지원)
+        document.getElementById('downloadBtn').addEventListener('click', async function() {
+            const name = document.getElementById('name').value.trim();
+            const position = document.getElementById('position').value.trim();
+            const content = document.getElementById('content').value.trim();
+
+            // 입력 검증
+            if (!name || !position || !content) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+
+            try {
+                // PDF 미리보기 영역 생성
+                const previewDiv = document.createElement('div');
+                previewDiv.style.position = 'absolute';
+                previewDiv.style.left = '-9999px';
+                previewDiv.style.width = '210mm';
+                previewDiv.style.padding = '20mm';
+                previewDiv.style.fontFamily = "'Noto Sans KR', sans-serif";
+                previewDiv.style.fontSize = '11pt';
+                previewDiv.style.lineHeight = '1.6';
+                previewDiv.style.color = '#333';
+                previewDiv.style.backgroundColor = 'white';
+                
+                // PDF 내용 HTML 생성 (XSS 방지를 위해 이스케이프 처리)
+                const escapedName = escapeHtml(name);
+                const escapedPosition = escapeHtml(position);
+                const escapedContent = escapeHtml(content).replace(/\n/g, '<br>');
+                
+                previewDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="font-size: 18pt; font-weight: bold; margin-bottom: 15px; color: #333;">자기소개서</h1>
+                        <hr style="border: none; border-top: 1px solid #ccc; margin: 15px 0;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>이름:</strong> ${escapedName}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>지원 직무:</strong> ${escapedPosition}
+                    </div>
+                    <hr style="border: none; border-top: 1px solid #ccc; margin: 15px 0;">
+                    <div style="margin-top: 20px; white-space: pre-wrap;">${escapedContent}</div>
+                    <div style="text-align: right; margin-top: 30px; font-size: 9pt; color: #999;">
+                        ${new Date().getFullYear()}년 ${new Date().getMonth() + 1}월 ${new Date().getDate()}일
+                    </div>
+                `;
+                
+                document.body.appendChild(previewDiv);
+
+                // html2canvas로 이미지 변환
+                const canvas = await html2canvas(previewDiv, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+
+                // jsPDF로 PDF 생성
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let yPosition = 0;
+
+                // 첫 페이지 추가
+                pdf.addImage(imgData, 'PNG', 0, yPosition, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // 여러 페이지가 필요한 경우
+                while (heightLeft > 0) {
+                    yPosition = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, yPosition, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // 미리보기 영역 제거
+                document.body.removeChild(previewDiv);
+
+                // 파일명 생성
+                const fileName = `자기소개서_${name}_${position}.pdf`.replace(/\s+/g, '_');
+
+                // PDF 다운로드
+                pdf.save(fileName);
+            } catch(error) {
+                console.error('PDF 생성 중 오류 발생:', error);
+                alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        });
+
+        // ========== 취업 준비 타임라인 기능 ==========
+        
+        // JSON 데이터 관리
+        let timelineData = JSON.parse(localStorage.getItem('timelineData') || '[]');
+
+        // 상태별 한글 텍스트 매핑
+        const statusText = {
+            'submitted': '서류 제출',
+            'interview': '면접 진행 중',
+            'result': '최종 결과',
+            'rejected': '불합격'
+        };
+
+        // 상태별 클래스 매핑
+        const statusClass = {
+            'submitted': 'status-submitted',
+            'interview': 'status-interview',
+            'result': 'status-result',
+            'rejected': 'status-rejected'
+        };
+
+        // 데이터 저장
+        function saveData() {
+            localStorage.setItem('timelineData', JSON.stringify(timelineData));
+        }
+
+        // 날짜 포맷팅
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // 타임라인 렌더링
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            
+            if (timelineData.length === 0) {
+                timeline.innerHTML = `
+                    <div class="empty-timeline">
+                        <div class="empty-timeline-icon">📋</div>
+                        <p>아직 지원한 회사가 없습니다.</p>
+                        <p>위 폼을 사용하여 첫 번째 회사를 추가해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 날짜순으로 정렬 (최신순)
+            const sortedData = [...timelineData].sort((a, b) => {
+                const dateA = a.date ? new Date(a.date) : new Date(0);
+                const dateB = b.date ? new Date(b.date) : new Date(0);
+                return dateB - dateA;
+            });
+
+            timeline.innerHTML = sortedData.map((item, index) => `
+                <div class="timeline-item" data-id="${item.id}" style="animation-delay: ${index * 0.1}s">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-company">${escapeHtml(item.companyName)}</div>
+                        <span class="timeline-status ${statusClass[item.status]}">
+                            ${statusText[item.status]}
+                        </span>
+                        ${item.date ? `<div class="timeline-date">📅 ${formatDate(item.date)}</div>` : ''}
+                        <div class="timeline-actions">
+                            <button class="btn-small edit-btn" onclick="editCompany(${item.id})">수정</button>
+                            <button class="btn-small delete delete-btn" onclick="deleteCompany(${item.id})">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 회사 추가
+        function addCompany(companyName, status, date) {
+            const newItem = {
+                id: Date.now(),
+                companyName: companyName,
+                status: status,
+                date: date || null
+            };
+            
+            timelineData.push(newItem);
+            saveData();
+            renderTimeline();
+            
+            // 애니메이션 효과를 위한 스크롤
+            setTimeout(() => {
+                const newItem = document.querySelector(`[data-id="${newItem.id}"]`);
+                if (newItem) {
+                    newItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+
+        // 회사 수정
+        function editCompany(id) {
+            const item = timelineData.find(i => i.id === id);
+            if (!item) return;
+
+            const newCompanyName = prompt('회사 이름을 수정하세요:', item.companyName);
+            if (newCompanyName === null) return;
+
+            const statusOptions = Object.entries(statusText).map(([value, text]) => 
+                `${value}: ${text}`
+            ).join('\n');
+            const statusInput = prompt(`지원 단계를 선택하세요:\n${statusOptions}`, item.status);
+            
+            if (statusInput === null) return;
+            const newStatus = statusInput.trim();
+
+            if (!statusText[newStatus]) {
+                alert('올바른 상태를 입력해주세요.');
+                return;
+            }
+
+            const dateInput = prompt('지원 날짜를 입력하세요 (YYYY-MM-DD 형식, 취소하려면 빈 값):', item.date || '');
+            const newDate = dateInput === null ? item.date : (dateInput.trim() || null);
+
+            item.companyName = newCompanyName.trim();
+            item.status = newStatus;
+            item.date = newDate;
+            
+            saveData();
+            renderTimeline();
+        }
+
+        // 회사 삭제
+        function deleteCompany(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    timelineData = timelineData.filter(i => i.id !== id);
+                    saveData();
+                    renderTimeline();
+                }, 300);
+            }
+        }
+
+        // 삭제 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(30px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 폼 제출 이벤트
+        document.getElementById('addCompanyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const companyName = document.getElementById('companyName').value.trim();
+            const status = document.getElementById('companyStatus').value;
+            const date = document.getElementById('companyDate').value;
+
+            if (!companyName) {
+                alert('회사 이름을 입력해주세요.');
+                return;
+            }
+
+            addCompany(companyName, status, date);
+            
+            // 폼 초기화
+            this.reset();
+            
+            // 성공 메시지
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '✓ 추가됨!';
+            submitBtn.style.background = 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)';
+            
+            setTimeout(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.style.background = '';
+            }, 2000);
+        });
+
+        // 페이지 로드 시 타임라인 렌더링
+        renderTimeline();
+
+        // 전역 함수로 등록 (인라인 이벤트 핸들러에서 사용)
+        window.editCompany = editCompany;
+        window.deleteCompany = deleteCompany;
+
+        // ========== 면접 연습 타이머 기능 ==========
+        
+        // 타이머 변수
+        let timerInterval = null;
+        let totalSeconds = 180; // 기본 3분
+        let remainingSeconds = 180;
+        let isRunning = false;
+        let isPaused = false;
+
+        // DOM 요소
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerProgress = document.getElementById('timerProgress');
+        const timerStatus = document.getElementById('timerStatus');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const timerOptions = document.querySelectorAll('.timer-option');
+
+        // 시간 포맷팅 (MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // 타이머 업데이트
+        function updateTimer() {
+            timerDisplay.textContent = formatTime(remainingSeconds);
+            
+            // 진행률 업데이트
+            const progress = ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+            timerProgress.style.width = `${progress}%`;
+
+            // 경고 상태 업데이트
+            timerDisplay.classList.remove('warning', 'danger');
+            if (remainingSeconds <= 10) {
+                timerDisplay.classList.add('danger');
+            } else if (remainingSeconds <= 30) {
+                timerDisplay.classList.add('warning');
+            }
+
+            // 타이머 종료 체크
+            if (remainingSeconds <= 0) {
+                stopTimer();
+                playAlarm();
+                timerStatus.textContent = '⏰ 시간 종료!';
+                timerDisplay.textContent = '00:00';
+                timerProgress.style.width = '100%';
+            } else {
+                remainingSeconds--;
+            }
+        }
+
+        // 타이머 시작
+        function startTimer() {
+            if (isRunning) return;
+
+            // 질문 입력 확인
+            const question = document.getElementById('interviewQuestion').value.trim();
+            if (!question) {
+                alert('면접 질문을 입력해주세요.');
+                return;
+            }
+
+            isRunning = true;
+            isPaused = false;
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            timerStatus.textContent = '⏱️ 진행 중...';
+
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // 타이머 일시정지
+        function pauseTimer() {
+            if (!isRunning) return;
+
+            clearInterval(timerInterval);
+            isRunning = false;
+            isPaused = true;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            timerStatus.textContent = '⏸️ 일시정지';
+        }
+
+        // 타이머 재개
+        function resumeTimer() {
+            if (isPaused && remainingSeconds > 0) {
+                isRunning = true;
+                isPaused = false;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                timerStatus.textContent = '⏱️ 진행 중...';
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        // 타이머 정지
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isRunning = false;
+            isPaused = false;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+
+        // 타이머 리셋
+        function resetTimer() {
+            stopTimer();
+            remainingSeconds = totalSeconds;
+            timerDisplay.textContent = formatTime(remainingSeconds);
+            timerDisplay.classList.remove('warning', 'danger');
+            timerProgress.style.width = '0%';
+            timerStatus.textContent = '준비 완료';
+        }
+
+        // 알림음 재생
+        function playAlarm() {
+            // Web Audio API를 사용한 알림음 생성
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 알림음 재생 함수
+                function playBeep(delay = 0) {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = 800;
+                        oscillator.type = 'sine';
+                        
+                        const now = audioContext.currentTime;
+                        gainNode.gain.setValueAtTime(0.3, now);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                        
+                        oscillator.start(now);
+                        oscillator.stop(now + 0.5);
+                    }, delay);
+                }
+                
+                // 3번 반복 재생
+                playBeep(0);
+                playBeep(600);
+                playBeep(1200);
+            } catch (error) {
+                console.error('알림음 재생 실패:', error);
+                // 알림음 재생 실패 시 브라우저 알림
+                if (Notification.permission === 'granted') {
+                    new Notification('⏰ 면접 연습 타이머', {
+                        body: '시간이 종료되었습니다!',
+                        icon: '🔔'
+                    });
+                }
+            }
+        }
+
+        // 시간 옵션 선택
+        timerOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                if (isRunning) {
+                    alert('타이머가 실행 중일 때는 시간을 변경할 수 없습니다.');
+                    return;
+                }
+
+                // 활성 상태 업데이트
+                timerOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+
+                // 시간 설정
+                totalSeconds = parseInt(this.dataset.time);
+                remainingSeconds = totalSeconds;
+                timerDisplay.textContent = formatTime(remainingSeconds);
+                timerProgress.style.width = '0%';
+                timerDisplay.classList.remove('warning', 'danger');
+            });
+        });
+
+        // 버튼 이벤트
+        startBtn.addEventListener('click', function() {
+            if (isPaused) {
+                resumeTimer();
+            } else {
+                startTimer();
+            }
+        });
+
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        // 페이지 언로드 시 타이머 정리
+        window.addEventListener('beforeunload', function() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        });
+
+        // ========== 취업 상담 챗봇 기능 ==========
+        
+        // 미리 준비된 질문-답변 세트
+        const chatbotQA = [
+            {
+                keywords: ['자기소개서', '자소서', '소개서', '작성', '어떻게', '방법'],
+                answer: '자기소개서 작성 시 다음 사항을 고려하세요:\n\n1. 지원 회사의 가치관과 비전을 먼저 파악하세요\n2. 구체적인 경험과 성과를 숫자로 표현하세요\n3. 지원 동기를 명확하게 서술하세요\n4. 입사 후 포부를 구체적으로 작성하세요\n5. 진솔하고 솔직한 내용이 중요합니다\n\n자기소개서 작성 도구를 활용해보시는 것도 좋습니다!'
+            },
+            {
+                keywords: ['면접', '면접 준비', '면접 질문', '면접 팁', '면접 대비'],
+                answer: '면접 준비는 다음과 같이 하시면 됩니다:\n\n1. 지원 회사와 직무에 대한 충분한 조사\n2. 예상 질문에 대한 답변 준비\n3. STAR 기법 활용 (상황-과제-행동-결과)\n4. 자신의 강점과 약점 명확히 정리\n5. 실제 경험을 바탕으로 한 구체적 사례 준비\n\n면접 연습 타이머를 활용해 시간 안에 답변하는 연습을 해보세요!'
+            },
+            {
+                keywords: ['이력서', '이력서 작성', '이력서 양식', '경력'],
+                answer: '이력서 작성 시 주의사항:\n\n1. 간결하고 명확하게 작성하세요\n2. 지원 직무와 관련된 경력을 강조하세요\n3. 구체적인 성과와 수치를 포함하세요\n4. 최신 경력부터 역순으로 작성하세요\n5. 오타와 문법 오류를 반드시 확인하세요\n\n깔끔하고 전문적인 이력서가 좋은 첫인상을 만듭니다!'
+            },
+            {
+                keywords: ['포트폴리오', '포트폴리오 작성', '작품', '프로젝트'],
+                answer: '포트폴리오 구성 팁:\n\n1. 지원 직무와 관련된 프로젝트를 우선 배치하세요\n2. 각 프로젝트의 문제 해결 과정을 상세히 설명하세요\n3. 사용한 기술과 도구를 명시하세요\n4. 결과물의 스크린샷이나 링크를 포함하세요\n5. 지속적으로 업데이트하고 개선하세요\n\n포트폴리오는 당신의 실력을 보여주는 중요한 자료입니다!'
+            },
+            {
+                keywords: ['지원', '지원 전략', '어디에', '어떤 회사', '선택'],
+                answer: '회사 지원 전략:\n\n1. 자신의 관심 분야와 직무를 먼저 정리하세요\n2. 회사의 문화와 가치관이 본인과 맞는지 확인하세요\n3. 다양한 규모의 회사에 지원해보세요\n4. 지원 현황을 체계적으로 관리하세요\n5. 각 회사별 맞춤형 자기소개서를 작성하세요\n\n회사 지원 관리 도구를 활용해 지원 현황을 추적해보세요!'
+            },
+            {
+                keywords: ['합격', '합격률', '확률', '불합격', '떨어졌어'],
+                answer: '불합격은 성장의 기회입니다:\n\n1. 피드백을 요청해보세요 (가능한 경우)\n2. 면접이나 서류에서 부족했던 점을 정리하세요\n3. 다음 지원에 반영할 개선점을 찾으세요\n4. 포기하지 말고 꾸준히 지원하세요\n5. 자신의 강점을 더욱 발전시키세요\n\n모든 경험이 다음 기회를 위한 준비입니다. 화이팅! 💪'
+            },
+            {
+                keywords: ['연봉', '급여', '협상', '제안', '대우'],
+                answer: '연봉 협상 시 고려사항:\n\n1. 시장 평균 연봉을 먼저 조사하세요\n2. 자신의 경력과 역량을 객관적으로 평가하세요\n3. 회사의 제안을 존중하면서도 합리적으로 협상하세요\n4. 연봉 외 복리후생도 함께 고려하세요\n5. 장기적인 성장 가능성도 중요합니다\n\n합리적이고 전문적인 태도로 협상하시기 바랍니다!'
+            },
+            {
+                keywords: ['스킬', '기술', '능력', '어떤 것', '필요'],
+                answer: '취업에 필요한 스킬:\n\n1. 직무 관련 전문 지식과 기술\n2. 커뮤니케이션 능력\n3. 문제 해결 능력\n4. 팀워크와 협업 능력\n5. 학습 능력과 적응력\n\n지속적인 학습과 실전 경험이 중요합니다. 온라인 강의, 프로젝트 참여 등을 통해 실력을 키워보세요!'
+            },
+            {
+                keywords: ['인턴', '인턴십', '인턴 지원', '인턴십 경험'],
+                answer: '인턴십의 장점:\n\n1. 실제 업무 경험을 쌓을 수 있습니다\n2. 회사 문화와 업무를 미리 경험할 수 있습니다\n3. 정규직 전환의 기회가 될 수 있습니다\n4. 네트워킹의 기회를 제공합니다\n5. 이력서에 실무 경험을 추가할 수 있습니다\n\n인턴십은 취업 준비에 매우 유용한 경험입니다!'
+            },
+            {
+                keywords: ['네트워킹', '인맥', '연결', '만나', '소개'],
+                answer: '네트워킹 방법:\n\n1. 업계 세미나나 컨퍼런스에 참여하세요\n2. LinkedIn 등 전문 SNS를 활용하세요\n3. 동문회나 동아리 활동을 적극 활용하세요\n4. 온라인 커뮤니티에 참여하세요\n5. 멘토를 찾아 조언을 구하세요\n\n진심 어린 소통이 좋은 네트워크를 만듭니다!'
+            },
+            {
+                keywords: ['안녕', '하이', '헬로', '시작', '도움'],
+                answer: '안녕하세요! 저는 길동이 취업 코치입니다. 😊\n\n취업 준비에 대해 궁금한 점이 있으시면 언제든지 물어보세요!\n\n다음과 같은 주제에 대해 도움을 드릴 수 있습니다:\n• 자기소개서 작성\n• 면접 준비\n• 이력서 작성\n• 포트폴리오 구성\n• 지원 전략\n• 기타 취업 관련 질문'
+            },
+            {
+                keywords: ['감사', '고마워', '고맙', '도움', '좋아'],
+                answer: '도움이 되었다니 기쁩니다! 😊\n\n취업 준비는 쉽지 않지만, 꾸준히 노력하시면 좋은 결과가 있을 것입니다.\n\n다른 궁금한 점이 있으시면 언제든지 물어보세요. 항상 응원하겠습니다! 화이팅! 💪'
+            }
+        ];
+
+        // 기본 답변 (매칭되는 키워드가 없을 때)
+        const defaultAnswer = '죄송합니다. 해당 질문에 대한 답변을 준비하지 못했습니다. 😅\n\n다음과 같은 주제로 질문해주시면 도움을 드릴 수 있습니다:\n• 자기소개서 작성\n• 면접 준비\n• 이력서 작성\n• 포트폴리오\n• 지원 전략\n• 기타 취업 관련 질문\n\n다시 질문해주시면 더 구체적으로 답변해드리겠습니다!';
+
+        // DOM 요소
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSendBtn = document.getElementById('chatbotSendBtn');
+
+        // 유사도 계산 함수 (간단한 키워드 매칭)
+        function calculateSimilarity(userQuestion, keywords) {
+            const question = userQuestion.toLowerCase();
+            let matchCount = 0;
+            
+            keywords.forEach(keyword => {
+                if (question.includes(keyword.toLowerCase())) {
+                    matchCount++;
+                }
+            });
+            
+            return matchCount / keywords.length;
+        }
+
+        // 가장 적합한 답변 찾기
+        function findBestAnswer(userQuestion) {
+            let bestMatch = null;
+            let bestScore = 0;
+
+            chatbotQA.forEach(qa => {
+                const score = calculateSimilarity(userQuestion, qa.keywords);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = qa;
+                }
+            });
+
+            // 최소 매칭 점수 (30% 이상)
+            if (bestScore >= 0.3) {
+                return bestMatch.answer;
+            }
+
+            return defaultAnswer;
+        }
+
+        // 현재 시간 포맷팅
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // 메시지 추가 함수
+        function addMessage(text, isUser = false) {
+            // 환영 메시지 제거
+            const welcomeMsg = chatbotMessages.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? '👤' : '🤖';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            // 줄바꿈 처리
+            contentDiv.style.whiteSpace = 'pre-wrap';
+            contentDiv.textContent = text;
+
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            contentDiv.appendChild(timeDiv);
+
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        // 타이핑 인디케이터 표시
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typingIndicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = '🤖';
+
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(indicator);
+            chatbotMessages.appendChild(typingDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        // 타이핑 인디케이터 제거
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // 메시지 전송 함수
+        function sendMessage() {
+            const question = chatbotInput.value.trim();
+            
+            if (!question) {
+                return;
+            }
+
+            // 사용자 메시지 추가
+            addMessage(question, true);
+            chatbotInput.value = '';
+
+            // 타이핑 인디케이터 표시
+            showTypingIndicator();
+
+            // 봇 응답 (약간의 딜레이 후)
+            setTimeout(() => {
+                removeTypingIndicator();
+                const answer = findBestAnswer(question);
+                addMessage(answer, false);
+            }, 1000 + Math.random() * 1000); // 1-2초 랜덤 딜레이
+        }
+
+        // 이벤트 리스너
+        chatbotSendBtn.addEventListener('click', sendMessage);
+
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 입력 필드 포커스 시 스크롤
+        chatbotInput.addEventListener('focus', function() {
+            setTimeout(() => {
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
